@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EduMatch – Tutor Booking</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#1D4ED8;--brand-light:#EFF6FF;--brand-dark:#1e3a8a;
+  --accent:#F59E0B;--accent-light:#FFFBEB;
+  --success:#10B981;--success-bg:#ECFDF5;
+  --danger:#EF4444;--danger-bg:#FEF2F2;
+  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --bg:#F9FAFB;--card:#ffffff;--border:#E5E7EB;--border2:#D1D5DB;
+  --radius:12px;--radius-sm:8px;--radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.08),0 2px 4px -2px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.05);
+  --font:'DM Sans',sans-serif;
+  --display:'DM Serif Display',serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+a{color:var(--brand);text-decoration:none}
+button{cursor:pointer;font-family:var(--font);font-size:14px}
+input,select,textarea{font-family:var(--font);font-size:14px}
+
+/* --- Layout --- */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.main{flex:1}
+
+/* --- Nav --- */
+nav{background:var(--card);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-logo{font-family:var(--display);font-size:22px;color:var(--brand);display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a,.nav-links button{padding:8px 14px;border-radius:var(--radius-sm);color:var(--text2);border:none;background:none;font-size:14px;font-weight:500;transition:all .15s}
+.nav-links a:hover,.nav-links button:hover{background:var(--brand-light);color:var(--brand)}
+.nav-links .active{color:var(--brand);background:var(--brand-light)}
+.btn-nav-cta{background:var(--brand)!important;color:#fff!important;padding:8px 18px!important;border-radius:var(--radius-sm)!important}
+.btn-nav-cta:hover{background:var(--brand-dark)!important}
+.nav-user{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;cursor:pointer;border:2px solid var(--border)}
+
+/* --- Buttons --- */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:var(--radius-sm);border:none;font-weight:500;font-size:14px;transition:all .15s;cursor:pointer}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--bg);border-color:var(--brand);color:var(--brand)}
+.btn-ghost{background:none;color:var(--text2);border:none;padding:8px 12px}
+.btn-ghost:hover{color:var(--text);background:var(--bg)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-sm{padding:7px 14px;font-size:13px}
+.btn-lg{padding:14px 28px;font-size:16px}
+
+/* --- Cards --- */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow)}
+.card-hover{transition:all .2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--brand)}
+
+/* --- Forms --- */
+.form-group{margin-bottom:1.25rem}
+.form-label{display:block;font-weight:500;margin-bottom:6px;font-size:14px;color:var(--text)}
+.form-input{width:100%;padding:10px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);background:var(--card);transition:border-color .15s}
+.form-input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+.form-select{width:100%;padding:10px 14px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:14px;color:var(--text);background:var(--card);cursor:pointer}
+.form-select:focus{outline:none;border-color:var(--brand)}
+textarea.form-input{resize:vertical;min-height:100px}
+
+/* --- Badges --- */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.badge-blue{background:var(--brand-light);color:var(--brand)}
+.badge-green{background:var(--success-bg);color:#065F46}
+.badge-yellow{background:var(--accent-light);color:#92400E}
+.badge-red{background:var(--danger-bg);color:#991B1B}
+.badge-gray{background:#F3F4F6;color:var(--text2)}
+
+/* --- Stars --- */
+.stars{display:flex;gap:2px;color:var(--accent)}
+.star{font-size:14px}
+
+/* --- Hero Section --- */
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#1D4ED8 60%,#2563eb 100%);color:#fff;padding:5rem 2rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;left:-10%;width:120%;height:180%;background:radial-gradient(ellipse at 60% 30%,rgba(245,158,11,.12) 0%,transparent 60%);}
+.hero h1{font-family:var(--display);font-size:clamp(2rem,5vw,3.5rem);font-weight:400;line-height:1.2;margin-bottom:1rem;position:relative}
+.hero h1 em{color:var(--accent);font-style:italic}
+.hero p{font-size:1.1rem;color:rgba(255,255,255,.8);max-width:560px;margin:0 auto 2rem;position:relative}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-hero-primary{background:#fff;color:var(--brand);padding:14px 32px;border-radius:var(--radius-sm);font-weight:600;font-size:15px;border:none;cursor:pointer;transition:all .2s}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.btn-hero-secondary{background:rgba(255,255,255,.12);color:#fff;padding:14px 32px;border-radius:var(--radius-sm);font-weight:500;font-size:15px;border:1px solid rgba(255,255,255,.3);cursor:pointer;backdrop-filter:blur(4px);transition:all .2s}
+.btn-hero-secondary:hover{background:rgba(255,255,255,.2)}
+
+/* --- Stats bar --- */
+.stats-bar{background:var(--card);border-bottom:1px solid var(--border);padding:1.25rem 2rem}
+.stats-inner{max-width:1100px;margin:0 auto;display:flex;gap:2rem;justify-content:center;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-size:1.75rem;font-weight:600;color:var(--brand);font-family:var(--display)}
+.stat-label{font-size:13px;color:var(--text2)}
+
+/* --- Container --- */
+.container{max-width:1100px;margin:0 auto;padding:0 2rem}
+
+/* --- Page sections --- */
+.page-section{padding:3rem 0}
+.section-header{margin-bottom:2rem}
+.section-title{font-family:var(--display);font-size:1.75rem;color:var(--text);margin-bottom:.4rem}
+.section-subtitle{color:var(--text2);font-size:15px}
+
+/* --- Tutor Cards Grid --- */
+.tutors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+.tutor-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .2s;cursor:pointer}
+.tutor-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--brand)}
+.tutor-card-banner{height:80px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);position:relative}
+.tutor-card-avatar{width:64px;height:64px;border-radius:50%;border:3px solid var(--card);position:absolute;bottom:-32px;left:1.25rem;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;color:#fff}
+.tutor-card-body{padding:2.5rem 1.25rem 1.25rem}
+.tutor-name{font-weight:600;font-size:16px;color:var(--text)}
+.tutor-title{font-size:13px;color:var(--text2);margin-bottom:.5rem}
+.tutor-subjects{display:flex;flex-wrap:wrap;gap:6px;margin:.75rem 0}
+.tutor-meta{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.tutor-price{font-weight:700;font-size:16px;color:var(--text)}
+.tutor-price span{font-weight:400;font-size:12px;color:var(--text2)}
+
+/* --- Search Bar --- */
+.search-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;box-shadow:var(--shadow)}
+.search-bar .form-group{margin:0;flex:1;min-width:160px}
+
+/* --- Tabs --- */
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:1.5rem}
+.tab{padding:10px 18px;font-size:14px;font-weight:500;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tab:hover{color:var(--text)}
+
+/* --- Auth pages --- */
+.auth-page{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.auth-card{width:100%;max-width:440px}
+.auth-logo{text-align:center;margin-bottom:2rem;font-family:var(--display);font-size:28px;color:var(--brand)}
+.auth-logo span{color:var(--accent)}
+.auth-title{font-family:var(--display);font-size:1.5rem;text-align:center;margin-bottom:.4rem}
+.auth-sub{text-align:center;color:var(--text2);font-size:14px;margin-bottom:1.75rem}
+.auth-divider{text-align:center;color:var(--text3);font-size:13px;margin:1rem 0;position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+.auth-footer{text-align:center;margin-top:1.25rem;font-size:13px;color:var(--text2)}
+
+/* --- Dashboard sidebar --- */
+.dashboard{display:flex;gap:0;min-height:80vh}
+.sidebar{width:240px;background:var(--card);border-right:1px solid var(--border);padding:1.5rem 0;flex-shrink:0}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;font-size:14px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.sidebar-item:hover{background:var(--bg);color:var(--text)}
+.sidebar-item.active{background:var(--brand-light);color:var(--brand);border-left-color:var(--brand)}
+.sidebar-icon{font-size:18px}
+.dashboard-content{flex:1;padding:2rem;overflow:auto}
+
+/* --- Booking slots --- */
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.slot{padding:8px 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;font-weight:500;text-align:center;cursor:pointer;transition:all .15s;color:var(--text2)}
+.slot:hover:not(.taken){border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+.slot.selected{background:var(--brand);color:#fff;border-color:var(--brand)}
+.slot.taken{background:var(--bg);color:var(--border2);cursor:default;text-decoration:line-through}
+
+/* --- Table --- */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;padding:10px 14px;border-bottom:2px solid var(--border);text-align:left}
+td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+
+/* --- Progress / Rating --- */
+.rating-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rating-bar-fill{height:6px;border-radius:3px;background:var(--accent);flex-shrink:0}
+.rating-bar-bg{flex:1;height:6px;border-radius:3px;background:var(--border)}
+
+/* --- Toast --- */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;box-shadow:var(--shadow-lg);z-index:999;transform:translateY(0);transition:all .3s;display:flex;align-items:center;gap:8px}
+.toast.hidden{transform:translateY(100px);opacity:0}
+
+/* --- Modal overlay --- */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.modal{background:var(--card);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.modal-title{font-family:var(--display);font-size:1.25rem}
+
+/* --- Responsive --- */
+@media(max-width:768px){
+  nav{padding:0 1rem}
+  .container{padding:0 1rem}
+  .sidebar{display:none}
+  .hero{padding:3rem 1rem}
+  .search-bar{flex-direction:column}
+  .tutors-grid{grid-template-columns:1fr}
+}
+
+/* page transitions */
+.page{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Section features */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:2rem}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;text-align:center}
+.feature-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:24px}
+.feature-title{font-weight:600;font-size:15px;margin-bottom:.4rem}
+.feature-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* Availability calendar */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-header{font-size:11px;font-weight:600;text-align:center;padding:4px;color:var(--text2);text-transform:uppercase}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid transparent;transition:all .15s;color:var(--text)}
+.cal-day:hover:not(.empty):not(.past){border-color:var(--brand);color:var(--brand)}
+.cal-day.available{background:var(--success-bg);color:#065F46;border-color:#A7F3D0}
+.cal-day.selected{background:var(--brand);color:#fff;border-color:var(--brand)}
+.cal-day.past{color:var(--text3);cursor:default}
+.cal-day.empty{cursor:default}
+.cal-day.today{border-color:var(--accent);color:var(--accent)}
+
+/* Profile page */
+.profile-hero{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;padding:2.5rem;border-radius:var(--radius-lg);display:flex;gap:1.5rem;align-items:center;margin-bottom:2rem}
+.profile-avatar-lg{width:90px;height:90px;border-radius:50%;border:4px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#fff;flex-shrink:0}
+.profile-info h2{font-family:var(--display);font-size:1.5rem;margin-bottom:.25rem}
+.profile-info p{opacity:.8;font-size:14px}
+
+/* Footer */
+footer{background:var(--text);color:rgba(255,255,255,.6);padding:2rem;text-align:center;font-size:13px;margin-top:3rem}
+footer a{color:rgba(255,255,255,.8)}
+footer strong{color:#fff;font-family:var(--display)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast" class="toast hidden">✓ Action completed</div>
+
+<script>
+// ===== DATA =====
+const TUTORS = [
+  {id:1,name:"Dr. Aisha Rahman",title:"Mathematics & Physics Expert",subjects:["Calculus","Linear Algebra","Physics"],grades:["Grade 9-12","University"],rating:4.9,reviews:124,price:35,sessions:380,color:"#1D4ED8",initials:"AR",bio:"PhD from MIT with 8 years of online tutoring experience. Specializes in exam preparation and concept building.",availability:["Mon","Wed","Fri"],languages:["English","Urdu"]},
+  {id:2,name:"James Okafor",title:"English Literature & Writing",subjects:["Essay Writing","Literature","Grammar"],grades:["Grade 6-12"],rating:4.7,reviews:88,price:28,sessions:210,color:"#065F46",initials:"JO",bio:"Published author and certified English teacher. Helps students find their voice and excel in academic writing.",availability:["Tue","Thu","Sat"],languages:["English"]},
+  {id:3,name:"Priya Sharma",title:"Chemistry & Biology Tutor",subjects:["Organic Chemistry","Biology","Biochemistry"],grades:["Grade 10-12","University"],rating:4.8,reviews:156,price:32,sessions:445,color:"#7C3AED",initials:"PS",bio:"MSc in Biochemistry. Passionate about making complex science concepts accessible and enjoyable.",availability:["Mon","Tue","Wed","Thu"],languages:["English","Hindi"]},
+  {id:4,name:"Carlos Mendez",title:"Programming & Computer Science",subjects:["Python","JavaScript","Data Structures"],grades:["Grade 9-12","University"],rating:4.6,reviews:72,price:40,sessions:185,color:"#DC2626",initials:"CM",bio:"Senior software engineer by day, passionate educator by evening. Real-world projects integrated into every lesson.",availability:["Wed","Fri","Sat","Sun"],languages:["English","Spanish"]},
+  {id:5,name:"Liu Wei",title:"Mandarin & HSK Preparation",subjects:["Mandarin Chinese","HSK Prep","Business Chinese"],grades:["All levels"],rating:4.9,reviews:201,price:30,sessions:590,color:"#B45309",initials:"LW",bio:"Native Mandarin speaker, certified HSK examiner with experience teaching students from 30+ countries.",availability:["Daily"],languages:["English","Mandarin"]},
+  {id:6,name:"Sarah Mitchell",title:"History & Social Studies",subjects:["World History","Geography","Economics"],grades:["Grade 7-12"],rating:4.5,reviews:63,price:25,sessions:140,color:"#0E7490",initials:"SM",bio:"MA in History from Oxford. Brings history to life through storytelling and critical thinking exercises.",availability:["Mon","Wed","Thu","Sat"],languages:["English"]}
+];
+
+const BOOKINGS = [
+  {id:1,student:"Alex Johnson",tutor:"Dr. Aisha Rahman",subject:"Calculus",date:"2026-06-10",time:"10:00 AM",status:"confirmed",zoom:"https://zoom.us/j/123456"},
+  {id:2,student:"Maria Garcia",tutor:"Priya Sharma",subject:"Organic Chemistry",date:"2026-06-12",time:"2:00 PM",status:"pending",zoom:null},
+  {id:3,student:"Tom Chen",tutor:"Carlos Mendez",subject:"Python",date:"2026-06-08",time:"4:00 PM",status:"completed",zoom:null},
+  {id:4,student:"Emma Wilson",tutor:"James Okafor",subject:"Essay Writing",date:"2026-06-15",time:"11:00 AM",status:"pending",zoom:null}
+];
+
+const ADMIN_TUTORS = [
+  {id:7,name:"Robert Lee",subject:"Physics",status:"pending",applied:"2026-06-01"},
+  {id:8,name:"Fatima Al-Hassan",subject:"Arabic & Islamic Studies",status:"pending",applied:"2026-06-02"},
+  {id:9,name:"Nina Petrov",subject:"Music Theory",status:"approved",applied:"2026-05-28"},
+];
+
+// ===== APP STATE =====
+let state = {
+  page: 'home',
+  role: null, // 'student','tutor','admin'
+  user: null,
+  authMode: 'login', // 'login','register','kyc'
+  selectedTutor: null,
+  bookingStep: 1,
+  selectedSlot: null,
+  selectedDate: null,
+  dashTab: 'overview',
+  bookingDate: null,
+  modal: null,
+  toast: null,
+};
+
+// ===== RENDER =====
+function render(){
+  const root = document.getElementById('root');
+  root.innerHTML = '';
+  const app = document.createElement('div');
+  app.className = 'app';
+  app.innerHTML = renderNav() + '<main class="main">' + renderPage() + '</main>' + renderFooter();
+  root.appendChild(app);
+  addEventListeners();
+}
+
+function renderNav(){
+  const links = state.role ? renderUserNav() : renderGuestNav();
+  return `<nav>
+    <div class="nav-logo" onclick="go('home')" style="cursor:pointer">Edu<span>Match</span></div>
+    <div class="nav-links">${links}</div>
+  </nav>`;
+}
+function renderGuestNav(){
+  return `<a onclick="go('tutors')" class="nav-links${state.page==='tutors'?' active':''}">Find Tutors</a>
+    <a onclick="go('howItWorks')">How It Works</a>
+    <a onclick="startAuth('student','login')">Log In</a>
+    <button class="btn-nav-cta" onclick="startAuth('student','register')">Get Started</button>`;
+}
+function renderUserNav(){
+  const name = state.user?.name || 'User';
+  const initials = name.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+  let links = '';
+  if(state.role==='student') links = `<a onclick="go('tutors')" class="${state.page==='tutors'?'active':''}">Find Tutors</a>
+    <a onclick="go('studentDash')" class="${state.page==='studentDash'?'active':''}">My Bookings</a>`;
+  if(state.role==='tutor') links = `<a onclick="go('tutorDash')" class="${state.page==='tutorDash'?'active':''}">Dashboard</a>`;
+  if(state.role==='admin') links = `<a onclick="go('adminDash')" class="${state.page==='adminDash'?'active':''}">Admin Panel</a>`;
+  return links + `<div class="nav-user">
+    <div class="avatar" title="${name}" onclick="logout()">${initials}</div>
+    <span style="font-size:13px;font-weight:500;color:var(--text2)">${name.split(' ')[0]}</span>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Sign out</button>
+  </div>`;
+}
+function renderFooter(){
+  return `<footer><strong>EduMatch</strong> &mdash; Connect with expert tutors online &nbsp;|&nbsp; <a href="#">Privacy</a> &nbsp;|&nbsp; <a href="#">Terms</a><br><small style="opacity:.5">© 2026 EduMatch. All rights reserved.</small></footer>`;
+}
+
+function renderPage(){
+  switch(state.page){
+    case 'home': return renderHome();
+    case 'tutors': return renderTutors();
+    case 'tutorProfile': return renderTutorProfile();
+    case 'booking': return renderBooking();
+    case 'auth': return renderAuth();
+    case 'studentDash': return renderStudentDash();
+    case 'tutorDash': return renderTutorDash();
+    case 'adminDash': return renderAdminDash();
+    case 'howItWorks': return renderHowItWorks();
+    default: return renderHome();
+  }
+}
+
+// ===== HOME =====
+function renderHome(){
+  return `<div class="page">
+    <div class="hero">
+      <h1>Learn from the<br><em>best tutors</em> online</h1>
+      <p>Connect with verified, expert tutors for personalized online sessions. Your success story starts here.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="go('tutors')">Find a Tutor</button>
+        <button class="btn-hero-secondary" onclick="startAuth('tutor','register')">Become a Tutor</button>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stats-inner">
+        <div class="stat-item"><div class="stat-num">500+</div><div class="stat-label">Verified Tutors</div></div>
+        <div class="stat-item"><div class="stat-num">12,000+</div><div class="stat-label">Sessions Completed</div></div>
+        <div class="stat-item"><div class="stat-num">4.8★</div><div class="stat-label">Average Rating</div></div>
+        <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Subjects Covered</div></div>
+      </div>
+    </div>
+    <div class="container page-section">
+      <div class="section-header">
+        <div class="section-title">Featured Tutors</div>
+        <div class="section-subtitle">Hand-picked, highly rated educators ready to help</div>
+      </div>
+      <div class="tutors-grid">
+        ${TUTORS.slice(0,3).map(t=>renderTutorCard(t)).join('')}
+      </div>
+      <div style="text-align:center;margin-top:2rem"><button class="btn btn-secondary" onclick="go('tutors')">Browse All Tutors →</button></div>
+    </div>
+    <div style="background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container page-section">
+      <div class="section-title" style="text-align:center;margin-bottom:.5rem">How EduMatch Works</div>
+      <div class="section-subtitle" style="text-align:center;margin-bottom:0">Three simple steps to your next session</div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#EFF6FF;color:var(--brand)">🔍</div>
+          <div class="feature-title">Search & Discover</div>
+          <div class="feature-desc">Browse profiles, check ratings, and find the perfect tutor for your subject and grade level.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--success-bg);color:#065F46">📅</div>
+          <div class="feature-title">Book a Session</div>
+          <div class="feature-desc">Select an available time slot and submit your booking request with just a few clicks.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--accent-light);color:#92400E">🎥</div>
+          <div class="feature-title">Learn via Zoom</div>
+          <div class="feature-desc">Once confirmed, join your session through Zoom and enjoy a focused, one-on-one learning experience.</div>
+        </div>
+      </div>
+    </div></div>
+  </div>`;
+}
+
+// ===== TUTORS PAGE =====
+function renderTutors(){
+  return `<div class="page">
+    <div style="background:var(--card);border-bottom:1px solid var(--border);padding:1.5rem 0">
+      <div class="container">
+        <h2 style="font-family:var(--display);font-size:1.75rem;margin-bottom:1rem">Find Your Tutor</h2>
+        <div class="search-bar">
+          <div class="form-group"><label class="form-label">Subject</label><input class="form-input" id="searchSubject" placeholder="e.g. Math, Python…" /></div>
+          <div class="form-group"><label class="form-label">Grade Level</label><select class="form-select" id="searchGrade"><option value="">All Grades</option><option>Grade 6-8</option><option>Grade 9-12</option><option>University</option></select></div>
+          <div class="form-group"><label class="form-label">Min Rating</label><select class="form-select" id="searchRating"><option value="">Any Rating</option><option>4.5+</option><option>4.7+</option><option>4.9+</option></select></div>
+          <button class="btn btn-primary" style="align-self:flex-end;margin-bottom:0">Search</button>
+        </div>
+      </div>
+    </div>
+    <div class="container page-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <span style="font-size:14px;color:var(--text2)">Showing <strong style="color:var(--text)">${TUTORS.length} tutors</strong></span>
+        <select class="form-select" style="width:auto"><option>Sort: Top Rated</option><option>Price: Low to High</option><option>Most Sessions</option></select>
+      </div>
+      <div class="tutors-grid">${TUTORS.map(t=>renderTutorCard(t)).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function renderTutorCard(t){
+  const stars = '★'.repeat(Math.floor(t.rating)) + (t.rating%1>=.5?'½':'');
+  return `<div class="tutor-card" onclick="viewTutor(${t.id})">
+    <div class="tutor-card-banner" style="background:linear-gradient(135deg,${t.color}cc,${t.color})">
+      <div class="tutor-card-avatar" style="background:${t.color}">${t.initials}</div>
+    </div>
+    <div class="tutor-card-body">
+      <div class="tutor-name">${t.name}</div>
+      <div class="tutor-title">${t.title}</div>
+      <div class="tutor-subjects">${t.subjects.map(s=>`<span class="badge badge-blue">${s}</span>`).join('')}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="color:var(--accent);font-size:14px">${'★'.repeat(Math.floor(t.rating))}</span>
+        <span style="font-weight:600;font-size:14px">${t.rating}</span>
+        <span style="font-size:12px;color:var(--text2)">(${t.reviews} reviews)</span>
+      </div>
+      <div class="tutor-meta">
+        <div class="tutor-price">$${t.price} <span>/ hour</span></div>
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();bookTutor(${t.id})">Book Now</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== TUTOR PROFILE =====
+function renderTutorProfile(){
+  const t = state.selectedTutor;
+  if(!t) return '<div class="container page-section">Tutor not found.</div>';
+  return `<div class="page">
+    <div class="container page-section">
+      <button class="btn btn-ghost btn-sm" onclick="go('tutors')" style="margin-bottom:1.5rem">← Back to Tutors</button>
+      <div class="profile-hero">
+        <div class="profile-avatar-lg" style="background:${t.color}44;border-color:${t.color}44">${t.initials}</div>
+        <div class="profile-info">
+          <h2>${t.name}</h2>
+          <p>${t.title}</p>
+          <div style="display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap">
+            ${t.subjects.map(s=>`<span style="background:rgba(255,255,255,.15);color:#fff;padding:3px 10px;border-radius:20px;font-size:12px">${s}</span>`).join('')}
+          </div>
+        </div>
+        <div style="margin-left:auto;text-align:right;flex-shrink:0">
+          <div style="font-size:2rem;font-weight:700">$${t.price}<span style="font-size:14px;font-weight:400;opacity:.7">/hr</span></div>
+          <div style="margin:.25rem 0;opacity:.8;font-size:14px">★ ${t.rating} (${t.reviews} reviews)</div>
+          <button class="btn btn-primary btn-lg" style="margin-top:.5rem;background:#fff;color:var(--brand)" onclick="bookTutor(${t.id})">Book a Session</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem">
+        <div>
+          <div class="card" style="margin-bottom:1.5rem">
+            <h3 style="font-family:var(--display);font-size:1.1rem;margin-bottom:.75rem">About ${t.name.split(' ')[1]}</h3>
+            <p style="color:var(--text2);line-height:1.7">${t.bio}</p>
+          </div>
+          <div class="card">
+            <h3 style="font-family:var(--display);font-size:1.1rem;margin-bottom:1rem">Student Reviews</h3>
+            <div style="margin-bottom:1.25rem">
+              <div style="font-size:2.5rem;font-weight:700;color:var(--text)">${t.rating}</div>
+              <div style="color:var(--accent);font-size:18px">${'★'.repeat(Math.floor(t.rating))}${'☆'.repeat(5-Math.floor(t.rating))}</div>
+              <div style="font-size:13px;color:var(--text2)">${t.reviews} ratings</div>
+            </div>
+            ${[5,4,3,2,1].map(n=>`<div class="rating-bar">
+              <span style="font-size:13px;width:12px;color:var(--text2)">${n}</span>
+              <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:${n===5?75:n===4?15:n===3?7:2}%"></div></div>
+              <span style="font-size:12px;color:var(--text2);width:28px">${n===5?75:n===4?15:n===3?7:2}%</span>
+            </div>`).join('')}
+            <div style="margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1rem">
+              <div class="card" style="margin-bottom:.75rem;padding:1rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem">
+                  <div style="font-weight:500;font-size:14px">Alex J.</div>
+                  <div style="color:var(--accent);font-size:13px">★★★★★</div>
+                </div>
+                <p style="font-size:13px;color:var(--text2);margin:0">Absolutely brilliant tutor. Complex topics made simple. Highly recommended!</p>
+              </div>
+              <div class="card" style="padding:1rem">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem">
+                  <div style="font-weight:500;font-size:14px">Maria G.</div>
+                  <div style="color:var(--accent);font-size:13px">★★★★★</div>
+                </div>
+                <p style="font-size:13px;color:var(--text2);margin:0">My exam score improved by 30% after just 6 sessions. Amazing!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:1rem">
+            <h4 style="font-size:14px;font-weight:600;margin-bottom:.75rem">Quick Info</h4>
+            <div style="font-size:13px;display:flex;flex-direction:column;gap:8px">
+              <div>🎓 <strong>${t.sessions}+</strong> sessions completed</div>
+              <div>📚 Grades: ${t.grades.join(', ')}</div>
+              <div>🌐 ${t.languages.join(', ')}</div>
+              <div>📅 Available: ${t.availability.join(', ')}</div>
+            </div>
+          </div>
+          <div class="card">
+            <h4 style="font-size:14px;font-weight:600;margin-bottom:.75rem">Availability Preview</h4>
+            <div class="slots-grid">
+              ${['9:00 AM','10:00 AM','11:00 AM','2:00 PM','3:00 PM','4:00 PM'].map((s,i)=>
+                `<div class="slot${i===2||i===5?' taken':''}">${s}</div>`).join('')}
+            </div>
+            <button class="btn btn-primary" style="width:100%;margin-top:1rem;justify-content:center" onclick="bookTutor(${t.id})">Book a Session</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== BOOKING =====
+function renderBooking(){
+  const t = state.selectedTutor;
+  if(!t) return '<div class="container page-section">Please select a tutor first.</div>';
+  const step = state.bookingStep;
+  return `<div class="page">
+    <div class="container page-section" style="max-width:700px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:2rem">
+        <button class="btn btn-ghost btn-sm" onclick="go('tutorProfile')">←</button>
+        <div>
+          <h2 style="font-family:var(--display);font-size:1.4rem">Book a Session</h2>
+          <p style="font-size:13px;color:var(--text2)">with ${t.name}</p>
+        </div>
+      </div>
+      <div style="display:flex;gap:0;margin-bottom:2rem">
+        ${[1,2,3].map(n=>`<div style="flex:1;text-align:center">
+          <div style="width:32px;height:32px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;
+            background:${n<=step?'var(--brand)':'var(--border)'};color:${n<=step?'#fff':'var(--text2)'};">${n}</div>
+          <div style="font-size:11px;color:${n<=step?'var(--brand)':'var(--text3)'};font-weight:${n===step?'600':'400'}">${['Select Date','Choose Time','Confirm'][n-1]}</div>
+        </div>${n<3?`<div style="flex:1;height:1px;background:${n<step?'var(--brand)':'var(--border)'};margin-top:16px"></div>`:''}`).join('')}
+      </div>
+      ${step===1?renderBookingStep1():step===2?renderBookingStep2():renderBookingStep3()}
+    </div>
+  </div>`;
+}
+function renderBookingStep1(){
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today=new Date();
+  const cells=[];
+  const firstDay=new Date(today.getFullYear(),today.getMonth(),1).getDay();
+  for(let i=0;i<firstDay;i++) cells.push(`<div class="cal-day empty"></div>`);
+  const daysInMonth=new Date(today.getFullYear(),today.getMonth()+1,0).getDate();
+  for(let d=1;d<=daysInMonth;d++){
+    const isPast=d<today.getDate();
+    const isAvail=[3,5,8,10,12,15,17,19,22,24,26,29].includes(d);
+    const isSel=state.selectedDate===d;
+    const isToday=d===today.getDate();
+    cells.push(`<div class="cal-day${isPast?' past':isAvail&&!isPast?' available':''}${isSel?' selected':''}${isToday?' today':''}" onclick="selectDate(${d})">${d}</div>`);
+  }
+  return `<div class="card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Select a Date – ${new Date().toLocaleString('default',{month:'long',year:'numeric'})}</h3>
+    <div class="cal-grid" style="margin-bottom:.75rem">
+      ${days.map(d=>`<div class="cal-header">${d}</div>`).join('')}
+      ${cells.join('')}
+    </div>
+    <div style="display:flex;gap:12px;font-size:12px;color:var(--text2)">
+      <span><span style="display:inline-block;width:12px;height:12px;background:var(--success-bg);border:1px solid #A7F3D0;border-radius:3px;vertical-align:middle;margin-right:4px"></span>Available</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:var(--brand);border-radius:3px;vertical-align:middle;margin-right:4px"></span>Selected</span>
+    </div>
+    <button class="btn btn-primary" style="margin-top:1.25rem" onclick="nextBookingStep()" ${!state.selectedDate?'disabled style="opacity:.5;cursor:not-allowed"':''}>Continue →</button>
+  </div>`;
+}
+function renderBookingStep2(){
+  const times=['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM'];
+  const taken=['10:00 AM','3:00 PM'];
+  return `<div class="card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:.25rem">Choose a Time Slot</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">June ${state.selectedDate}, 2026 – All times in your local timezone</p>
+    <div class="slots-grid" style="grid-template-columns:repeat(auto-fill,minmax(90px,1fr))">
+      ${times.map(t=>`<div class="slot${taken.includes(t)?' taken':state.selectedSlot===t?' selected':''}" onclick="selectSlot('${t}')">${t}</div>`).join('')}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:1.25rem">
+      <button class="btn btn-secondary" onclick="state.bookingStep=1;render()">← Back</button>
+      <button class="btn btn-primary" onclick="nextBookingStep()" ${!state.selectedSlot?'disabled style="opacity:.5;cursor:not-allowed"':''}>Continue →</button>
+    </div>
+  </div>`;
+}
+function renderBookingStep3(){
+  const t=state.selectedTutor;
+  return `<div class="card">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:1.25rem">Confirm Your Booking</h3>
+    <div style="background:var(--bg);border-radius:var(--radius-sm);padding:1.25rem;margin-bottom:1.25rem">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:1rem">
+        <div style="width:48px;height:48px;border-radius:50%;background:${t.color};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">${t.initials}</div>
+        <div><div style="font-weight:600">${t.name}</div><div style="font-size:13px;color:var(--text2)">${t.title}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:14px">
+        <div><span style="color:var(--text2)">Date:</span> <strong>June ${state.selectedDate}, 2026</strong></div>
+        <div><span style="color:var(--text2)">Time:</span> <strong>${state.selectedSlot}</strong></div>
+        <div><span style="color:var(--text2)">Duration:</span> <strong>1 Hour</strong></div>
+        <div><span style="color:var(--text2)">Mode:</span> <strong>Zoom Meeting</strong></div>
+        <div><span style="color:var(--text2)">Rate:</span> <strong>$${t.price}/hr</strong></div>
+        <div><span style="color:var(--text2)">Status:</span> <span class="badge badge-yellow">Pending Approval</span></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message to Tutor (optional)</label>
+      <textarea class="form-input" placeholder="Tell the tutor about your learning goals, areas to focus on, or any questions…" rows="3"></textarea>
+    </div>
+    <div style="background:var(--brand-light);border:1px solid #BFDBFE;border-radius:var(--radius-sm);padding:.875rem;font-size:13px;color:var(--brand);margin-bottom:1.25rem">
+      ℹ️ Your booking will be sent to the tutor. You'll receive a Zoom link by email once confirmed.
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-secondary" onclick="state.bookingStep=2;render()">← Back</button>
+      <button class="btn btn-primary" onclick="confirmBooking()">Confirm Booking ✓</button>
+    </div>
+  </div>`;
+}
+
+// ===== AUTH =====
+function renderAuth(){
+  const isRegister = state.authMode==='register';
+  const isTutor = state.role==='tutor';
+  const isKyc = state.authMode==='kyc';
+  const isAdmin = state.role==='admin';
+  if(isKyc) return renderKycForm();
+  return `<div class="page auth-page">
+    <div class="auth-card card">
+      <div class="auth-logo">Edu<span>Match</span></div>
+      <h2 class="auth-title">${isRegister?'Create Account':'Welcome Back'}</h2>
+      <p class="auth-sub">${isRegister?'Join thousands of students and tutors':'Sign in to continue learning'}</p>
+      ${isRegister?`<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem">
+        ${['Student','Tutor'].map(r=>`<button onclick="state.role='${r.toLowerCase()}';render()" class="btn ${state.role===r.toLowerCase()?'btn-primary':'btn-secondary'} btn-sm">${r}</button>`).join('')}
+      </div>`:''}
+      ${isAdmin?`<div class="form-group"><label class="form-label">Admin Name</label><input class="form-input" value="Super Admin"/></div>`:''}
+      ${isRegister?`<div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="authName" placeholder="Your full name"/></div>`:''}
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" id="authEmail" type="email" placeholder="you@example.com"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="authPass" type="password" placeholder="••••••••"/></div>
+      ${isRegister&&!isAdmin?`<div style="font-size:12px;color:var(--text2);margin-bottom:1rem">By registering, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></div>`:''}
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="handleAuth()">${isRegister?'Create Account →':'Sign In →'}</button>
+      <div class="auth-footer">
+        ${isRegister?`Already have an account? <a onclick="state.authMode='login';render()">Sign in</a>`:`Don't have an account? <a onclick="state.authMode='register';render()">Sign up free</a>`}
+        ${!isRegister&&!isAdmin?`<br><a onclick="startAuth('admin','login')" style="font-size:11px;opacity:.6">Admin login</a>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderKycForm(){
+  return `<div class="page">
+    <div class="container page-section" style="max-width:680px">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:20px">🎓</div>
+          <div><h2 style="font-family:var(--display);font-size:1.25rem">Tutor KYC Verification</h2>
+          <p style="font-size:13px;color:var(--text2)">Please complete your profile to get verified</p></div>
+        </div>
+        <div style="background:var(--accent-light);border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:.875rem;font-size:13px;color:#92400E;margin-bottom:1.5rem">
+          ⚠️ Your account requires admin approval after submission. You'll be notified by email.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="As per ID"/></div>
+          <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date"/></div>
+          <div class="form-group"><label class="form-label">Gender</label><select class="form-select"><option>Select…</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" placeholder="+1 234 567 8900"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Address</label><input class="form-input" placeholder="Full address"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="form-group"><label class="form-label">Highest Qualification</label><input class="form-input" placeholder="e.g. PhD Mathematics"/></div>
+          <div class="form-group"><label class="form-label">Teaching Experience</label><select class="form-select"><option>Select…</option><option>Less than 1 year</option><option>1–3 years</option><option>3–5 years</option><option>5+ years</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Subject Expertise</label><input class="form-input" placeholder="e.g. Calculus, Linear Algebra, Statistics"/></div>
+        <div class="form-group"><label class="form-label">Grade Levels You Teach</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+            ${['Grade 1-5','Grade 6-8','Grade 9-12','University','All Levels'].map(g=>`<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="checkbox"> ${g}</label>`).join('')}
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Bio / Teaching Philosophy</label><textarea class="form-input" placeholder="Tell students about your teaching style and approach…" rows="3"></textarea></div>
+        <div class="form-group"><label class="form-label">Government ID Type</label><select class="form-select"><option>Select…</option><option>Passport</option><option>National ID</option><option>Driver's License</option></select></div>
+        <div class="form-group"><label class="form-label">Upload Supporting Documents</label>
+          <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:1.5rem;text-align:center;cursor:pointer;color:var(--text2);font-size:13px">
+            📎 Click to upload or drag & drop<br><span style="font-size:11px;opacity:.7">PDF, JPG, PNG up to 10MB each</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:.5rem">
+          <button class="btn btn-secondary" onclick="go('home')">Cancel</button>
+          <button class="btn btn-primary" onclick="submitKyc()">Submit for Review →</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== STUDENT DASHBOARD =====
+function renderStudentDash(){
+  const tab = state.dashTab;
+  return `<div class="page dashboard">
+    <div class="sidebar">
+      ${[['overview','🏠 Overview'],['bookings','📅 My Bookings'],['tutors','🔍 Find Tutors'],['reviews','⭐ My Reviews'],['profile','👤 Profile']].map(([t,l])=>
+        `<div class="sidebar-item${tab===t?' active':''}" onclick="state.dashTab='${t}';render()">${l}</div>`).join('')}
+    </div>
+    <div class="dashboard-content">
+      ${tab==='overview'?renderStudentOverview():tab==='bookings'?renderStudentBookings():tab==='reviews'?renderStudentReviews():tab==='profile'?renderStudentProfile():renderStudentOverview()}
+    </div>
+  </div>`;
+}
+function renderStudentOverview(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">Welcome back, Alex! 👋</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem">
+      ${[['3','Upcoming Sessions'],['12','Completed Sessions'],['4.8★','Avg. Tutor Rating'],['2','Pending Requests']].map(([n,l])=>
+        `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem">
+          <div style="font-size:1.75rem;font-weight:700;color:var(--brand);font-family:var(--display)">${n}</div>
+          <div style="font-size:13px;color:var(--text2)">${l}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card" style="margin-bottom:1.5rem">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Upcoming Sessions</h3>
+      ${BOOKINGS.filter(b=>b.status==='confirmed').map(b=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:.875rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:.5rem">
+          <div>
+            <div style="font-weight:500;font-size:14px">${b.subject} with ${b.tutor}</div>
+            <div style="font-size:12px;color:var(--text2)">📅 ${b.date} · 🕙 ${b.time}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge badge-green">Confirmed</span>
+            <button class="btn btn-primary btn-sm" onclick="showToast('Opening Zoom meeting…')">Join Zoom</button>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Recommended Tutors</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem">
+        ${TUTORS.slice(0,2).map(t=>`<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;display:flex;gap:10px;align-items:center">
+          <div style="width:40px;height:40px;border-radius:50%;background:${t.color};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0">${t.initials}</div>
+          <div style="min-width:0">
+            <div style="font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${t.name}</div>
+            <div style="font-size:12px;color:var(--text2)">★ ${t.rating} · $${t.price}/hr</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" style="flex-shrink:0" onclick="bookTutor(${t.id})">Book</button>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function renderStudentBookings(){
+  return `<div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <h2 style="font-family:var(--display);font-size:1.5rem">My Bookings</h2>
+      <button class="btn btn-primary btn-sm" onclick="go('tutors')">+ New Booking</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active">All</button>
+      <button class="tab">Pending</button>
+      <button class="tab">Confirmed</button>
+      <button class="tab">Completed</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Tutor</th><th>Subject</th><th>Date & Time</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${BOOKINGS.map(b=>`<tr>
+            <td style="font-weight:500">${b.tutor}</td>
+            <td>${b.subject}</td>
+            <td style="color:var(--text2);font-size:13px">${b.date}<br>${b.time}</td>
+            <td><span class="badge badge-${b.status==='confirmed'?'green':b.status==='pending'?'yellow':b.status==='completed'?'blue':'red'}">${b.status}</span></td>
+            <td>
+              ${b.status==='confirmed'?`<button class="btn btn-primary btn-sm" onclick="showToast('Opening Zoom…')">Join Zoom</button>`:''}
+              ${b.status==='completed'?`<button class="btn btn-secondary btn-sm" onclick="showToast('Review form opened!')">Rate &amp; Review</button>`:''}
+              ${b.status==='pending'?`<button class="btn btn-ghost btn-sm" onclick="showToast('Booking cancelled.')">Cancel</button>`:''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function renderStudentReviews(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">My Reviews</h2>
+    <div class="card">
+      <p style="color:var(--text2);font-size:14px;margin-bottom:1.5rem">Rate tutors after completed sessions to help other students.</p>
+      <div style="border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem">
+          <div style="width:40px;height:40px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">CM</div>
+          <div><div style="font-weight:500">Carlos Mendez</div><div style="font-size:12px;color:var(--text2)">Python · June 8, 2026</div></div>
+          <span class="badge badge-green" style="margin-left:auto">Completed</span>
+        </div>
+        <div style="margin-bottom:.75rem">
+          <div style="font-size:13px;color:var(--text2);margin-bottom:.4rem">Your Rating:</div>
+          <div style="display:flex;gap:4px;font-size:24px;color:var(--border2);cursor:pointer">
+            ${[1,2,3,4,5].map(n=>`<span onclick="showToast('Rating saved: ${n} stars!')" style="cursor:pointer" title="${n} stars">☆</span>`).join('')}
+          </div>
+        </div>
+        <textarea class="form-input" placeholder="Share your experience with this tutor…" rows="2"></textarea>
+        <button class="btn btn-primary btn-sm" style="margin-top:.75rem" onclick="showToast('Review submitted! Thank you.')">Submit Review</button>
+      </div>
+    </div>
+  </div>`;
+}
+function renderStudentProfile(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">My Profile</h2>
+    <div class="card" style="max-width:500px">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">AJ</div>
+        <div><div style="font-weight:600;font-size:16px">Alex Johnson</div><div style="font-size:13px;color:var(--text2)">Student Account</div></div>
+      </div>
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" value="Alex Johnson"/></div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" value="alex@example.com"/></div>
+      <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" placeholder="Leave blank to keep current"/></div>
+      <button class="btn btn-primary" onclick="showToast('Profile updated successfully!')">Save Changes</button>
+    </div>
+  </div>`;
+}
+
+// ===== TUTOR DASHBOARD =====
+function renderTutorDash(){
+  const tab=state.dashTab;
+  return `<div class="page dashboard">
+    <div class="sidebar">
+      ${[['overview','📊 Overview'],['requests','📥 Booking Requests'],['schedule','📅 My Schedule'],['classes','🎥 Classes'],['reviews','⭐ Reviews'],['profile','👤 Profile']].map(([t,l])=>
+        `<div class="sidebar-item${tab===t?' active':''}" onclick="state.dashTab='${t}';render()">${l}</div>`).join('')}
+    </div>
+    <div class="dashboard-content">
+      ${tab==='overview'?renderTutorOverview():tab==='requests'?renderTutorRequests():tab==='schedule'?renderTutorSchedule():tab==='reviews'?renderTutorReviews():renderTutorOverview()}
+    </div>
+  </div>`;
+}
+function renderTutorOverview(){
+  return `<div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <h2 style="font-family:var(--display);font-size:1.5rem">Tutor Dashboard</h2>
+      <span class="badge badge-green">✓ Verified</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem">
+      ${[['2','Pending Requests'],['5','Upcoming Classes'],['48','Total Sessions'],['$960','This Month']].map(([n,l])=>
+        `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem">
+          <div style="font-size:1.75rem;font-weight:700;color:var(--brand);font-family:var(--display)">${n}</div>
+          <div style="font-size:13px;color:var(--text2)">${l}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card" style="margin-bottom:1.5rem">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Pending Booking Requests</h3>
+      ${BOOKINGS.filter(b=>b.status==='pending').map(b=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:.875rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:.5rem">
+          <div>
+            <div style="font-weight:500;font-size:14px">${b.student} → ${b.subject}</div>
+            <div style="font-size:12px;color:var(--text2)">📅 ${b.date} · 🕙 ${b.time}</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-success btn-sm" onclick="showToast('Booking accepted! Zoom link sent.')">✓ Accept</button>
+            <button class="btn btn-danger btn-sm" onclick="showToast('Booking rejected.')">✕ Reject</button>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Today's Schedule</h3>
+      <p style="color:var(--text3);font-size:13px;text-align:center;padding:1rem">No sessions scheduled for today.</p>
+    </div>
+  </div>`;
+}
+function renderTutorRequests(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">Booking Requests</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Student</th><th>Subject</th><th>Date & Time</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${BOOKINGS.map(b=>`<tr>
+            <td style="font-weight:500">${b.student}</td>
+            <td>${b.subject}</td>
+            <td style="font-size:13px;color:var(--text2)">${b.date} ${b.time}</td>
+            <td><span class="badge badge-${b.status==='confirmed'?'green':b.status==='pending'?'yellow':b.status==='completed'?'blue':'red'}">${b.status}</span></td>
+            <td style="display:flex;gap:6px">
+              ${b.status==='pending'?`<button class="btn btn-success btn-sm" onclick="showToast('Accepted!')">Accept</button><button class="btn btn-danger btn-sm" onclick="showToast('Rejected.')">Reject</button>`:''}
+              ${b.status==='confirmed'?`<button class="btn btn-primary btn-sm" onclick="showToast('Zoom link opened!')">Zoom</button>`:''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function renderTutorSchedule(){
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const times=['8 AM','9 AM','10 AM','11 AM','12 PM','1 PM','2 PM','3 PM','4 PM','5 PM','6 PM'];
+  return `<div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <h2 style="font-family:var(--display);font-size:1.5rem">Availability Schedule</h2>
+      <button class="btn btn-primary btn-sm" onclick="showToast('Schedule saved!')">Save Changes</button>
+    </div>
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1.25rem">Click slots to toggle availability. Green = available, white = unavailable.</p>
+      <div style="overflow-x:auto">
+        <table style="min-width:500px">
+          <thead><tr><th></th>${days.map(d=>`<th style="text-align:center">${d}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${times.map((t,ti)=>`<tr>
+              <td style="font-size:13px;color:var(--text2);padding:6px 10px;white-space:nowrap">${t}</td>
+              ${days.map((d,di)=>{const on=[0,2,4].includes(di)&&ti>=1&&ti<=5;return`<td style="padding:3px;text-align:center">
+                <div onclick="showToast('Slot toggled!')" style="width:36px;height:28px;border-radius:4px;cursor:pointer;margin:0 auto;background:${on?'var(--success-bg)':'var(--bg)'};border:1px solid ${on?'#A7F3D0':'var(--border)'};transition:all .15s">&nbsp;</div>
+              </td>`}).join('')}
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+function renderTutorReviews(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">Reviews & Ratings</h2>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:1.5rem;align-items:start">
+      <div class="card" style="text-align:center">
+        <div style="font-size:3rem;font-weight:700;color:var(--text);font-family:var(--display)">4.9</div>
+        <div style="color:var(--accent);font-size:20px">★★★★★</div>
+        <div style="font-size:13px;color:var(--text2)">124 ratings</div>
+        <div style="margin-top:1rem">${[5,4,3,2,1].map(n=>`<div class="rating-bar" style="margin-bottom:4px">
+          <span style="font-size:11px;width:8px;color:var(--text2)">${n}</span>
+          <div class="rating-bar-bg" style="margin:0 6px"><div class="rating-bar-fill" style="width:${n===5?78:n===4?14:6}%"></div></div>
+          <span style="font-size:11px;color:var(--text2)">${n===5?78:n===4?14:6}%</span>
+        </div>`).join('')}</div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Student Reviews</h3>
+        ${[{s:'Alex J.',r:5,c:'Brilliant tutor! Complex topics made simple.',d:'June 3, 2026'},{s:'Maria G.',r:5,c:'My exam score improved by 30%. Absolutely recommend!',d:'May 28, 2026'},{s:'Tom C.',r:4,c:'Very patient and knowledgeable. Great sessions.',d:'May 20, 2026'}].map(r=>`
+          <div style="padding:.875rem 0;border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem">
+              <span style="font-weight:500;font-size:14px">${r.s}</span>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="color:var(--accent);font-size:13px">${'★'.repeat(r.r)}</span>
+                <span style="font-size:12px;color:var(--text3)">${r.d}</span>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--text2);margin:0">${r.c}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== ADMIN DASHBOARD =====
+function renderAdminDash(){
+  const tab=state.dashTab;
+  return `<div class="page dashboard">
+    <div class="sidebar">
+      ${[['overview','📊 Overview'],['tutorApproval','✅ Tutor Approvals'],['allTutors','👥 All Tutors'],['students','🎓 Students'],['settings','⚙️ Settings']].map(([t,l])=>
+        `<div class="sidebar-item${tab===t?' active':''}" onclick="state.dashTab='${t}';render()">${l}</div>`).join('')}
+    </div>
+    <div class="dashboard-content">
+      ${tab==='overview'?renderAdminOverview():tab==='tutorApproval'?renderAdminApproval():tab==='allTutors'?renderAdminTutors():renderAdminOverview()}
+    </div>
+  </div>`;
+}
+function renderAdminOverview(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">Admin Overview</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem">
+      ${[['24','Total Tutors'],['312','Total Students'],['2','Pending Approvals'],['1,240','Total Sessions'],['$38,400','Platform Revenue'],['4.8★','Avg. Rating']].map(([n,l])=>
+        `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--brand);font-family:var(--display)">${n}</div>
+          <div style="font-size:12px;color:var(--text2)">${l}</div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:1rem">Pending Tutor Approvals</h3>
+      ${ADMIN_TUTORS.filter(t=>t.status==='pending').map(t=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:.875rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:.5rem">
+          <div><div style="font-weight:500;font-size:14px">${t.name}</div><div style="font-size:12px;color:var(--text2)">${t.subject} · Applied ${t.applied}</div></div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Viewing KYC form…')">View KYC</button>
+            <button class="btn btn-success btn-sm" onclick="showToast('Tutor approved! Email sent.')">Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="showToast('Tutor rejected. Email sent.')">Reject</button>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+function renderAdminApproval(){
+  return `<div>
+    <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">Tutor Approval Queue</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Subject</th><th>Applied</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${ADMIN_TUTORS.map(t=>`<tr>
+            <td style="font-weight:500">${t.name}</td>
+            <td>${t.subject}</td>
+            <td style="font-size:13px;color:var(--text2)">${t.applied}</td>
+            <td><span class="badge badge-${t.status==='approved'?'green':'yellow'}">${t.status}</span></td>
+            <td style="display:flex;gap:6px">
+              <button class="btn btn-secondary btn-sm" onclick="showToast('Opening KYC…')">View KYC</button>
+              ${t.status==='pending'?`<button class="btn btn-success btn-sm" onclick="showToast('Approved!')">✓ Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="showToast('Rejected.')">✕ Reject</button>`:''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+function renderAdminTutors(){
+  return `<div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <h2 style="font-family:var(--display);font-size:1.5rem">All Tutors</h2>
+      <input class="form-input" style="width:220px" placeholder="Search tutors…"/>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Tutor</th><th>Subjects</th><th>Rating</th><th>Sessions</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${TUTORS.map(t=>`<tr>
+            <td><div style="font-weight:500">${t.name}</div><div style="font-size:12px;color:var(--text2)">${t.title}</div></td>
+            <td style="font-size:13px">${t.subjects.join(', ')}</td>
+            <td>★ ${t.rating}</td>
+            <td>${t.sessions}</td>
+            <td><span class="badge badge-green">Active</span></td>
+            <td style="display:flex;gap:6px">
+              <button class="btn btn-secondary btn-sm" onclick="showToast('Opening tutor profile…')">Edit</button>
+              <button class="btn btn-ghost btn-sm" onclick="showToast('Account deactivated.')">Deactivate</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// ===== HOW IT WORKS =====
+function renderHowItWorks(){
+  return `<div class="page">
+    <div class="container page-section">
+      <div style="text-align:center;margin-bottom:3rem">
+        <h1 style="font-family:var(--display);font-size:2.5rem;margin-bottom:1rem">How EduMatch Works</h1>
+        <p style="color:var(--text2);font-size:1.1rem;max-width:560px;margin:0 auto">Everything you need to know about finding, booking, and attending online tutoring sessions.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:3rem">
+        <div>
+          <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">For Students</h2>
+          ${[['🔍','Search & Filter','Browse tutors by subject, grade level, or rating. Every tutor is verified.'],['📋','View Profiles','Check tutor bios, qualifications, and real student reviews before booking.'],['📅','Book a Session','Select an available slot and submit your request. Tutors respond quickly.'],['🎥','Attend via Zoom','Receive a Zoom link once confirmed. Learn from anywhere!'],['⭐','Rate & Review','Share your experience after each session to help the community.']].map(([ic,t,d],i)=>`
+          <div style="display:flex;gap:1rem;margin-bottom:1.25rem">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ic}</div>
+            <div><div style="font-weight:600;margin-bottom:.2rem">${t}</div><div style="font-size:13px;color:var(--text2)">${d}</div></div>
+          </div>`).join('')}
+        </div>
+        <div>
+          <h2 style="font-family:var(--display);font-size:1.5rem;margin-bottom:1.5rem">For Tutors</h2>
+          ${[['📝','Register & KYC','Sign up and complete your KYC verification to ensure quality on our platform.'],['⏳','Await Approval','Our admin team reviews your application. You\'ll be notified by email.'],['📅','Set Availability','Mark your available dates and times so students can book you.'],['📥','Manage Requests','Accept or reject booking requests from your dashboard.'],['💰','Earn & Grow','Track earnings, reviews, and build your student base.']].map(([ic,t,d])=>`
+          <div style="display:flex;gap:1rem;margin-bottom:1.25rem">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--success-bg);color:#065F46;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${ic}</div>
+            <div><div style="font-weight:600;margin-bottom:.2rem">${t}</div><div style="font-size:13px;color:var(--text2)">${d}</div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div style="background:var(--brand);color:#fff;border-radius:var(--radius-lg);padding:3rem;text-align:center">
+        <h2 style="font-family:var(--display);font-size:1.75rem;margin-bottom:.75rem">Ready to get started?</h2>
+        <p style="opacity:.8;margin-bottom:1.5rem">Join over 12,000 students learning online today.</p>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button class="btn-hero-primary" onclick="startAuth('student','register')">Find a Tutor</button>
+          <button class="btn-hero-secondary" onclick="startAuth('tutor','register')">Become a Tutor</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== ACTIONS =====
+function go(page){state.page=page;state.dashTab='overview';render();}
+function startAuth(role,mode){state.role=role;state.authMode=mode;state.page='auth';render();}
+function logout(){state.role=null;state.user=null;state.page='home';render();showToast('Signed out successfully.');}
+function viewTutor(id){state.selectedTutor=TUTORS.find(t=>t.id===id);state.page='tutorProfile';render();}
+function bookTutor(id){
+  if(!state.role){startAuth('student','login');return;}
+  state.selectedTutor=TUTORS.find(t=>t.id===id);
+  state.bookingStep=1;state.selectedDate=null;state.selectedSlot=null;
+  state.page='booking';render();
+}
+function selectDate(d){state.selectedDate=d;render();}
+function selectSlot(s){state.selectedSlot=s;render();}
+function nextBookingStep(){state.bookingStep++;render();}
+function confirmBooking(){
+  showToast('🎉 Booking submitted! Awaiting tutor confirmation.');
+  state.page='studentDash';state.dashTab='bookings';render();
+}
+function submitKyc(){showToast('KYC submitted! You\'ll receive an email with our decision.');state.page='home';state.role=null;render();}
+function handleAuth(){
+  const name = document.getElementById('authName')?.value||'';
+  const email = document.getElementById('authEmail')?.value||'demo@example.com';
+  if(state.authMode==='register'){
+    if(state.role==='tutor'){state.authMode='kyc';render();return;}
+    state.user={name:name||'Alex Johnson',email};
+    state.page=state.role==='admin'?'adminDash':'studentDash';
+    state.dashTab='overview';
+    showToast(`Welcome${name?' '+name.split(' ')[0]:''}! 🎉`);
+    render();
+  } else {
+    const roles={'student':'studentDash','tutor':'tutorDash','admin':'adminDash'};
+    const names={'student':'Alex Johnson','tutor':'Dr. Aisha Rahman','admin':'Admin User'};
+    state.user={name:names[state.role]||'User',email};
+    state.page=roles[state.role]||'studentDash';
+    state.dashTab='overview';
+    showToast('Welcome back! 👋');
+    render();
+  }
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast';
+  setTimeout(()=>t.className='toast hidden',2800);
+}
+
+function addEventListeners(){
+  document.querySelectorAll('[onclick]').forEach(el=>{
+    const fn=el.getAttribute('onclick');
+    el.removeAttribute('onclick');
+    el.addEventListener('click',()=>eval(fn));
+  });
+}
+
+// ===== INIT =====
+render();
+</script>
+</body>
+</html>
