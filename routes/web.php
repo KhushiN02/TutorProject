@@ -42,4 +42,13 @@ Route::prefix('student')->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])
         ->name('student.settings');
 
+    Route::get('/login', function () {
+    return view('auth.login');
+
+Route::view('/login', 'auth.login');
+Route::view('/register', 'auth.register');
+Route::view('/forgot-password', 'auth.forgot-password');
+
+});
+
 });
